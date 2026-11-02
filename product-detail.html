@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Detail Produk - Kopdes</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial, sans-serif; background: #f5f5f5; color: #333; }
+
+  .top-bar { background: #fff; border-bottom: 1px solid #e5e5e5; padding: 6px 24px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #555; }
+  .top-bar-left { display: flex; align-items: center; gap: 6px; }
+  .top-bar-right { display: flex; gap: 20px; align-items: center; }
+  .top-bar-right a { color: #555; text-decoration: none; }
+  .top-bar-right a:hover { color: #d32f2f; }
+
+  .navbar { background: #fff; padding: 12px 24px; display: flex; align-items: center; gap: 20px; border-bottom: 1px solid #e5e5e5; position: sticky; top: 0; z-index: 100; }
+  .logo { font-size: 24px; font-weight: 900; color: #d32f2f; text-decoration: none; letter-spacing: -1px; display: flex; align-items: center; gap: 4px; }
+  .logo-icon { width: 36px; height: 36px; background: #d32f2f; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+  .logo span { color: #d32f2f; font-size: 22px; font-weight: 900; }
+  .logo span b { color: #f57c00; }
+  .kategori-btn { display: flex; align-items: center; gap: 6px; background: none; border: none; cursor: pointer; font-size: 14px; color: #333; font-weight: 500; padding: 8px 12px; border-radius: 4px; }
+  .kategori-btn:hover { background: #f5f5f5; }
+  .search-bar { flex: 1; display: flex; border: 1.5px solid #e5e5e5; border-radius: 4px; overflow: hidden; max-width: 560px; }
+  .search-bar input { flex: 1; border: none; padding: 10px 14px; font-size: 14px; outline: none; color: #555; }
+  .search-bar button { background: #d32f2f; border: none; padding: 0 18px; cursor: pointer; display: flex; align-items: center; }
+  .nav-links { display: flex; align-items: center; gap: 20px; margin-left: auto; }
+  .nav-links a { text-decoration: none; color: #333; font-size: 14px; font-weight: 500; }
+  .nav-links a:hover { color: #d32f2f; }
+  .cart-btn { background: none; border: none; cursor: pointer; padding: 6px; border-radius: 50%; }
+  .nav-auth { display: flex; gap: 12px; }
+  .btn-daftar { padding: 8px 20px; border: 1.5px solid #d32f2f; background: none; color: #d32f2f; border-radius: 4px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .btn-daftar:hover { background: #fff5f5; }
+  .btn-masuk { padding: 8px 20px; background: #d32f2f; border: none; color: #fff; border-radius: 4px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .btn-masuk:hover { background: #b71c1c; }
+
+  .breadcrumb { max-width: 1200px; margin: 16px auto; padding: 0 24px; display: flex; align-items: center; gap: 6px; font-size: 13px; color: #888; flex-wrap: wrap; }
+  .breadcrumb a { color: #888; text-decoration: none; }
+  .breadcrumb a:hover { color: #d32f2f; }
+  .breadcrumb .sep { font-size: 10px; color: #bbb; }
+  .breadcrumb .current { color: #333; }
+
+  .detail-wrapper {
+    max-width: 1200px; margin: 0 auto 40px; padding: 0 24px;
+    display: grid;
+    grid-template-columns: 400px 1fr 280px;
+    gap: 24px;
+    align-items: start;
+  }
+
+  /* LEFT */
+  .main-img-box {
+    background: #f9f9f9; border: 1px solid #e8e8e8; border-radius: 10px;
+    height: 340px; display: flex; align-items: center; justify-content: center;
+    overflow: hidden; position: relative;
+  }
+  .main-img-box img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; transition: transform 0.3s; }
+  .main-img-box img:hover { transform: scale(1.04); }
+  .category-strip {
+    background: #d32f2f; color: #fff; text-align: center;
+    font-weight: 700; font-size: 15px; padding: 10px;
+    border-radius: 0 0 10px 10px;
+    position: absolute; bottom: 0; left: 0; right: 0;
+  }
+  .thumbnails { display: flex; gap: 10px; margin-top: 12px; }
+  .thumb {
+    width: 64px; height: 64px; border-radius: 6px; overflow: hidden;
+    border: 2px solid #e8e8e8; cursor: pointer; background: #f9f9f9;
+    transition: border-color 0.15s;
+  }
+  .thumb.active { border-color: #d32f2f; }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* CENTER */
+  .product-title { font-size: 22px; font-weight: 700; color: #1a1a1a; line-height: 1.3; margin-bottom: 14px; }
+  .meta-box { border: 1px solid #e8e8e8; border-radius: 8px; padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+  .meta-row { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #555; }
+  .brand-link { color: #d32f2f; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 4px; }
+  .brand-link:hover { text-decoration: underline; }
+  .instant-badge { display: flex; align-items: center; gap: 6px; color: #f57c00; font-weight: 600; font-size: 13px; }
+  .price-main { font-size: 28px; font-weight: 800; color: #d32f2f; }
+  .price-discount-row { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
+  .discount-chip { background: #f57c00; color: #fff; font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: 6px; }
+  .price-original { font-size: 14px; color: #aaa; text-decoration: line-through; }
+  .desc-section { margin-top: 16px; }
+  .desc-section h3 { font-size: 15px; font-weight: 700; color: #222; margin-bottom: 10px; }
+  .desc-section ul { padding-left: 18px; display: flex; flex-direction: column; gap: 6px; }
+  .desc-section ul li { font-size: 14px; color: #444; line-height: 1.5; }
+  .see-more { color: #2563eb; font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 10px; display: inline-block; }
+  .see-more:hover { text-decoration: underline; }
+
+  /* RIGHT */
+  .qty-box { border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+  .qty-label { font-size: 13px; color: #555; margin-bottom: 10px; }
+  .qty-control { display: flex; align-items: center; gap: 12px; }
+  .qty-btn {
+    width: 32px; height: 32px; border-radius: 50%;
+    border: 1.5px solid #d32f2f; background: #fff; color: #d32f2f;
+    font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; line-height: 1;
+  }
+  .qty-btn:hover { background: #fff5f5; }
+  .qty-num { font-size: 16px; font-weight: 700; min-width: 24px; text-align: center; }
+  .btn-keranjang {
+    width: 100%; background: #d32f2f; color: #fff; border: none;
+    padding: 13px; font-size: 15px; font-weight: 700; border-radius: 8px;
+    cursor: pointer; margin-bottom: 16px; transition: background 0.15s;
+  }
+  .btn-keranjang:hover { background: #b71c1c; }
+  .delivery-box { border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+  .delivery-title { font-size: 14px; font-weight: 700; margin-bottom: 12px; }
+  .delivery-row { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #555; margin-bottom: 10px; }
+  .delivery-row:last-child { margin-bottom: 0; }
+  .delivery-row strong { color: #333; }
+  .free { color: #22c55e; font-weight: 700; }
+  .promo-box { border: 1px solid #e8e8e8; border-radius: 8px; padding: 16px; font-size: 13px; color: #555; line-height: 1.5; }
+  .promo-box-inner { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px; }
+  .btn-lihat-qr { border: 1px solid #ccc; background: #fff; color: #333; padding: 7px 16px; border-radius: 6px; font-size: 13px; cursor: pointer; font-weight: 600; }
+  .btn-lihat-qr:hover { background: #f5f5f5; }
+
+  @media (max-width: 960px) { .detail-wrapper { grid-template-columns: 1fr 1fr; } .buy-col { grid-column: 1 / -1; } }
+  @media (max-width: 640px) { .detail-wrapper { grid-template-columns: 1fr; } .nav-links, .top-bar-right { display: none; } }
+</style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<div class="top-bar">
+  <div class="top-bar-left">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+    <strong>JABODETABEK</strong>. Masuk untuk ubah lokasi.
+  </div>
+  <div class="top-bar-right">
+    <a href="#">Layanan Pelanggan</a>
+    <a href="#">Jelajahi Kopdes</a>
+    <a href="#" style="display:flex;align-items:center;gap:4px;">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
+      Download Kopdes App
+    </a>
+  </div>
+</div>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <a href="KOPDES.html" class="logo">
+    <div class="logo-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>
+    </div>
+    <span>Kop<b>Des</b></span>
+  </a>
+  <button class="kategori-btn">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    Kategori
+  </button>
+  <div class="search-bar">
+    <input type="text" placeholder="Temukan produk favoritmu disini" />
+    <button><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+  </div>
+  <div class="nav-links">
+    <a href="#">Brand</a>
+    <a href="#">Promo</a>
+    <button class="cart-btn">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+    </button>
+  </div>
+  <div class="nav-auth">
+    <button class="btn-daftar">Daftar</button>
+    <button class="btn-masuk">Masuk</button>
+  </div>
+</nav>
+
+<!-- Breadcrumb -->
+<div class="breadcrumb">
+  <a href="KOPDES.html">Home</a>
+  <span class="sep">›</span>
+  <span id="bcCategory" class="current">—</span>
+  <span class="sep">›</span>
+  <span id="bcName" class="current">—</span>
+</div>
+
+<!-- Detail -->
+<div class="detail-wrapper">
+
+  <!-- LEFT: Gambar -->
+  <div class="img-col">
+    <div class="main-img-box">
+      <img id="mainImg" src="" alt="" />
+      <div class="category-strip" id="categoryStrip">—</div>
+    </div>
+    <div class="thumbnails" id="thumbnails"></div>
+  </div>
+
+  <!-- CENTER: Info -->
+  <div class="info-col">
+    <div class="product-title" id="productTitle">—</div>
+    <div class="meta-box">
+      <div class="meta-row">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-4 0v2"/></svg>
+        Brand: <a href="#" class="brand-link" id="brandLink">KopDes</a>
+      </div>
+      <div class="meta-row">
+        <div class="instant-badge">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f57c00" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Pengiriman Instan
+        </div>
+      </div>
+    </div>
+    <div class="price-section">
+      <div class="price-main" id="priceMain">—</div>
+      <div class="price-discount-row" id="discountRow" style="display:none;">
+        <span class="discount-chip" id="discountChip">—</span>
+        <span class="price-original" id="priceOriginal">—</span>
+      </div>
+    </div>
+    <div class="desc-section">
+      <h3>Deskripsi</h3>
+      <ul id="descList"></ul>
+      <a href="#" class="see-more">Lihat Selengkapnya</a>
+    </div>
+  </div>
+
+  <!-- RIGHT: Beli -->
+  <div class="buy-col">
+    <div class="qty-box">
+      <div class="qty-label">Jumlah Pembelian</div>
+      <div class="qty-control">
+        <button class="qty-btn" onclick="changeQty(-1)">−</button>
+        <span class="qty-num" id="qtyNum">1</span>
+        <button class="qty-btn" onclick="changeQty(1)">+</button>
+      </div>
+    </div>
+    <button class="btn-keranjang">+ Keranjang</button>
+    <div class="delivery-box">
+      <div class="delivery-title">Pengiriman</div>
+      <div class="delivery-row">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.8"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 4v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        Dikirim oleh <strong>&nbsp;KOPDES Instant</strong>
+      </div>
+      <div class="delivery-row">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Biaya Pengiriman&nbsp;<span class="free">Gratis</span>
+      </div>
+    </div>
+    <div class="promo-box">
+      <div class="promo-box-inner">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d32f2f" stroke-width="2" style="flex-shrink:0;margin-top:2px"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+        <span>Promo lebih banyak dengan belanja di aplikasi Kopdes. Scan QR untuk download.</span>
+      </div>
+      <button class="btn-lihat-qr">Lihat QR</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const products = [
+  { 
+    name: "Glock 17 Gen 5 9mm Pistol", 
+    category: "Senjata Api", 
+    price: "$539", 
+    img: "https://cdn11.bigcommerce.com/s-olxmtailgz/images/stencil/1280x1280/products/43207/1706920/764503037108__23943.1721929111.jpg?c=1", 
+    desc: ["Pistol semi-otomatis 9mm generasi terbaru", "Kapasitas magasin 17 peluru", "Tersedia sistem ambi-dextrous", "Finishing nDLC anti-korosi", "Bobot kosong: 625 gram"] 
+  },
+  { 
+    name: "AR-15 Tactical Carbine 5.56mm", 
+    category: "Senjata Api", 
+    originalPrice: "$1.100", 
+    price: "$950", 
+    discount: "14%", 
+    img: "https://www.stagarms.com/media/catalog/product/s/t/stag15000242-1-color_1.jpg?quality=80&bg-color=255,255,255&fit=bounds&height=630&width=1000&canvas=1000:630", 
+    desc: ["Senapan serbu semi-otomatis kaliber 5.56mm NATO", "Rel Picatinny untuk aksesori taktis", "Panjang laras 16 inci", "Popor adjustable 6 posisi", "Berat kosong: 3.1 kg"] 
+  },
+  { 
+    name: "Remington 870 Tactical Shotgun 12GA", 
+    category: "Senjata Api", 
+    price: "$489", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHnDkiNlMoxgPNLa_enRYkIVAIpbk0dEp47yJVEW3R8IJQuCY4AiO04V1T&s=10", 
+    desc: ["Shotgun pump-action kaliber 12 gauge", "Kapasitas 6+1 peluru", "Laras 18.5 inci dengan choke", "Grip pistol taktis", "Tersedia mount untuk lampu taktis"] 
+  },
+  { 
+    name: "Sig Sauer P320 Nitron Full-Size 9mm", 
+    category: "Senjata Api", 
+    price: "$579", 
+    img: "https://www.sigsauer.com/media/catalog/product/cache/2f7933e2ff16f0ec074a16ab6b6195f2/p/3/p320f-9-bss-left.jpg", 
+    desc: ["Pistol modular striker-fired 9mm", "Kapasitas magasin 17 peluru", "Modul grip bisa diganti", "Standar militer US Army (MHS)", "Finishing Nitron hitam matte"] 
+  },
+  { 
+    name: "Federal American Eagle 9mm Ammunition 50 Rds", 
+    category: "Peluru", 
+    price: "$18", 
+    img: "https://cdn11.bigcommerce.com/s-ekrpmfdr7v/images/stencil/original/products/10501/18683/Untitled_design_96__62047.1753292251.png?c=1", 
+    desc: ["Kaliber 9mm Luger (9x19mm)", "Berat proyektil 115 grain FMJ", "Isi 50 butir per kotak", "Cocok untuk latihan harian", "Konsistensi tinggi dari pabrik Federal"] 
+  },
+  { 
+    name: "Winchester 5.56x45mm NATO 62gr FMJ 20 Rds", 
+    category: "Peluru", 
+    price: "$14", 
+    img: "https://cdn11.bigcommerce.com/s-9j9zreeu/images/stencil/1280x1280/products/76445/255983/WNWM855K_1_HR__82136.1707335939.jpg?c=2?imbypass=on", 
+    desc: ["Kaliber 5.56x45mm NATO (M855 equivalent)", "Berat proyektil 62 grain FMJ steel-core", "Isi 20 butir per kotak", "Kecepatan moncong ±940 m/s", "Diproduksi sesuai standar NATO"] 
+  },
+  { 
+    name: "Hornady Black 300 AAC Blackout 110gr 20 Rds", 
+    category: "Peluru", 
+    originalPrice: "$28", 
+    price: "$24", 
+    discount: "14%", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4N0qscbh3uq7oR3m_Bcxu_iJiPTs5pAHXpTUhNc3gGA&s", 
+    desc: ["Kaliber .300 AAC Blackout (7.62x35mm)", "Proyektil 110 grain V-MAX", "Isi 20 butir per kotak", "Optimal untuk senapan dengan suppressor", "Akurasi tinggi jarak menengah"] 
+  },
+  { 
+    name: "Plate Carrier Tactical Vest (MOLLE System)", 
+    category: "Armor", 
+    price: "$220", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShbK8u7Bv21dtt9mr2j31p-4tWnK6o2u8_RAgOiQ2ulqwUqc0c7--NJjs&s=10", 
+    desc: ["Sistem MOLLE untuk tambah pouch", "Muat plate armor ukuran 25x30cm (SAPI)", "Material Cordura 500D tahan robek", "Tali bahu dan pinggang adjustable", "Tersedia dalam warna MultiCam & Black"] 
+  },
+  { 
+    name: "Level IV Ceramic Body Armor Plate Set (2 Pcs)", 
+    category: "Armor", 
+    originalPrice: "$450", 
+    price: "$380", 
+    discount: "15%", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTiRq-ch8UbgKdx6tsnqHmS5y-DUu2uHg0fuSMYbALJ6w&s", 
+    desc: ["Standar NIJ Level IV (mampu hentikan .30-06 AP)", "Material keramik alumina + PE backing", "Bobot per plate ±2.7 kg", "Ukuran SAPI Medium (25x30cm)", "Isi 1 set (depan & belakang)"] 
+  },
+  { 
+    name: "FAST High Cut Ballistic Helmet (Level IIIA)", 
+    category: "Armor", 
+    price: "$650", 
+    img: "https://cdn11.bigcommerce.com/s-53r83b14/images/stencil/1500x1500/products/24722/122221/SENTINEL_BALLISTIC_LEVEL_IIIA_HIGH_CUT_FAST_HELMET-min__75278.1774876766.jpg?c=2", 
+    desc: ["Standar NIJ Level IIIA (tahan 9mm & .44 Magnum)", "Material UHMWPE ultra-ringan", "Desain High Cut untuk headset komunikasi", "Rel NVG mount di depan", "Suspensi Ops-Core H-Nape Pad System"] 
+  },
+  { 
+    name: "Mechanix Wear Tactical Combat Gloves", 
+    category: "Aksesori Armor", 
+    price: "$35", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYqEoQ8niNcT09hJNZDbmTXd8LDA5i3lVXZCTXULg52tmOmnQzyCtywyY&s=10", 
+    desc: ["Material synthetic leather tahan abrasi", "Ujung jari kompatibel touchscreen", "Pelindung knuckle TPR", "Ventilasi di punggung tangan", "Tersedia ukuran S / M / L / XL"] 
+  },
+  { 
+    name: "Oakley SI Ballistic M Frame 3.0 Goggles", 
+    category: "Aksesori Armor", 
+    price: "$140", 
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQGetjGdbJSAkg2aMkQyIvYIfRuSuGfae2QM5mh6BigmmUCxohzpf4r291I&s=10", 
+    desc: ["Standar balistik ANSI Z87.1 & MIL-PRF-32432", "Lensa Plutonite® anti-pecah", "Proteksi UV 100%", "Frame T-Matter™ ringan & fleksibel", "Tersedia clear, grey, dan smoke lens"] 
+  }
+];
+const params = new URLSearchParams(window.location.search);
+const id = parseInt(params.get('id')) || 0;
+const p = products[Math.min(id, products.length - 1)];
+
+document.title = p.name + ' - Kopdes';
+document.getElementById('productTitle').textContent = p.name;
+document.getElementById('priceMain').textContent = p.price;
+document.getElementById('categoryStrip').textContent = p.category;
+document.getElementById('brandLink').textContent = 'KopDes ' + p.category;
+document.getElementById('bcCategory').textContent = p.category;
+document.getElementById('bcName').textContent = p.name;
+
+if (p.discount) {
+  document.getElementById('discountRow').style.display = 'flex';
+  document.getElementById('discountChip').textContent = p.discount;
+  document.getElementById('priceOriginal').textContent = p.originalPrice;
+}
+
+const mainImg = document.getElementById('mainImg');
+mainImg.src = p.img;
+mainImg.alt = p.name;
+mainImg.onerror = function() { this.style.opacity = '0.3'; };
+
+const thumbsEl = document.getElementById('thumbnails');
+[p.img, p.img].forEach((src, i) => {
+  const d = document.createElement('div');
+  d.className = 'thumb' + (i === 0 ? ' active' : '');
+  d.innerHTML = `<img src="${src}" alt="thumb ${i+1}" onerror="this.parentElement.style.display='none'"/>`;
+  d.onclick = () => {
+    document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+    d.classList.add('active');
+    mainImg.src = src;
+  };
+  thumbsEl.appendChild(d);
+});
+
+(p.desc || []).forEach(item => {
+  const li = document.createElement('li');
+  li.textContent = item;
+  document.getElementById('descList').appendChild(li);
+});
+
+let qty = 1;
+function changeQty(delta) {
+  qty = Math.max(1, qty + delta);
+  document.getElementById('qtyNum').textContent = qty;
+}
+</script>
+</body>
+</html>
